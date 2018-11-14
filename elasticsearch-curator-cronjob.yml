@@ -17,6 +17,6 @@ spec:
               image: slalwani97/elasticsearch-curator-e2e:v1
               imagePullPolicy: IfNotPresent
               command: ["/bin/bash"]
-              args: ["-c", "curator --config /usr/share/curator/config.yml /usr/share/curator/action.yml"]
+              args: ["-c", "curator --config /usr/share/curator/config.yml --dry-run /usr/share/curator/action.yml"]
               ports:
                 - containerPort: 80
