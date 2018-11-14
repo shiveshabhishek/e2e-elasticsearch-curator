@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: elasticsearch-curator
+  namespace: logging
+spec:
+  schedule: "0 1 * * *"
+  successfulJobsHistoryLimit: 3 # how many completed jobs should be kept
+  failedJobsHistoryLimit: 3 # how many failed jobs should be kept
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: elasticsearch-curator-cronjob
+              image: slalwani97/elasticsearch-curator-e2e:v1
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/bash"]
+              args: ["-c", "curator --config /usr/share/curator/config.yml /usr/share/curator/action.yml"]
+              ports:
+                - containerPort: 80
