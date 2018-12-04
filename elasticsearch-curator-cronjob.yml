@@ -2,9 +2,11 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: elasticsearch-curator
-  namespace: logging
+  # namespace: logging
+  labels:
+    app: elasticsearch-curator
 spec:
-  schedule: "0 1 * * *"
+  schedule: "*/5 * * * *" # Scheduled for every 5 minutes.
   successfulJobsHistoryLimit: 3 # how many completed jobs should be kept
   failedJobsHistoryLimit: 3 # how many failed jobs should be kept
   jobTemplate:
@@ -13,10 +15,17 @@ spec:
         spec:
           restartPolicy: Never
           containers:
-            - name: elasticsearch-curator-cronjob
-              image: slalwani97/elasticsearch-curator-e2e:v1
-              imagePullPolicy: IfNotPresent
-              command: ["/bin/bash"]
-              args: ["-c", "curator --config /usr/share/curator/config.yml --dry-run /usr/share/curator/action.yml"]
-              ports:
-                - containerPort: 80
+          - name: elasticsearch-curator-cronjob
+            image: shiveshabhishek/curator-7days-cm:v1.2
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/bash"]
+            args: ["-c", "curator --config /usr/share/curator/config.yml --dry-run /usr/share/curator/action.yml"] #--dry-run will return the value to console only.
+            ports:
+              - containerPort: 80
+            volumeMounts:
+            - name: config
+              mountPath: /usr/share/curator/
+          volumes:
+          - name: config
+            configMap:
+              name: "elasticsearch-curator-config"

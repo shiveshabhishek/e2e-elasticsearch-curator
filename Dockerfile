@@ -2,9 +2,9 @@ FROM centos:7
 
 WORKDIR /usr/share/curator
 
-COPY config.yml /usr/share/curator/config.yml
+# COPY config.yml /usr/share/curator/config.yml
 
-COPY action.yml /usr/share/curator/action.yml
+# COPY action.yml /usr/share/curator/action.yml
 
 RUN yum -y update
 
